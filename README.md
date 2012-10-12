@@ -34,3 +34,12 @@ Test that it all works:
 Add node-app to the default runlevels
 
 	update-rd.c node-app defaults
+
+Finally, reboot to be sure app starts automatically
+
+	reboot
+
+Gotchas
+----
+
+If there is a app.pid file already and you try to start it will not start. You will have to manually remove the .pid file and run it again.

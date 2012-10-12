@@ -19,6 +19,8 @@ Edit the node-app script with your settings for node path, node environment (ie:
 	NODE_ENV="production"
 	APP_DIR='/var/www/example.com';
 	PIDFILE=$APP_DIR/pid/app.pid
+
+By default, it expects the pid file to be in /var/www/example.com/pid/app.pid
 	
 Copy the startup script node-app to your /etc/init.d directory
 
@@ -27,6 +29,7 @@ Copy the startup script node-app to your /etc/init.d directory
 
 
 Test that it all works:
+
 	/etc/init.d/node-app start
 	/etc/init.d/node-app restart
 	/etc/init.d/node-app stop

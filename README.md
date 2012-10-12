@@ -45,4 +45,4 @@ Finally, reboot to be sure app starts automatically
 Gotchas
 ----
 
-If there is a app.pid file already and you try to start it will not start. You will have to manually remove the .pid file and run it again.
+If there is a app.pid file already, but node is not running, and you try to start it will not start. You will have to manually remove the .pid file and run it again.

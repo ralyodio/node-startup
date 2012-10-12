@@ -1,0 +1,67 @@
+#/bin/sh
+EXEC=/usr/local/bin/node
+NODE_ENV="production"
+APP_DIR='/var/www/example.com';
+PIDFILE=$APP_DIR/pid/app.pid
+
+###############
+
+# REDHAT chkconfig header
+
+# chkconfig: - 58 74
+# description: node-app is the script for starting a node app on boot.
+### BEGIN INIT INFO
+# Provides: node
+# Required-Start:    $network $remote_fs $local_fs 
+# Required-Stop:     $network $remote_fs $local_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: start and stop node
+# Description: Node process for app
+### END INIT INFO
+
+
+case "$1" in
+    start)
+        if [ -f $PIDFILE ]
+        then
+                echo "$PIDFILE exists, process is already running or crashed"
+        else
+                echo "Starting node app..."
+		NODE_ENV=$NODE_ENV $EXEC $APP_DIR/app.js  1>$APP_DIR/log/app.log 2>&1 &
+		echo $! > $APP_DIR/pid/app.pid;
+        fi
+        ;;
+    stop)
+        if [ ! -f $PIDFILE ]
+        then
+                echo "$PIDFILE does not exist, process is not running"
+        else
+                echo "Stopping $APP_DIR/app.js ..."
+		echo "Killing `cat $APP_DIR/pid/app.pid`"
+		kill `cat $APP_DIR/pid/app.pid`;
+		rm $APP_DIR/pid/app.pid;
+                echo "Node stopped"
+        fi
+        ;;
+
+	restart)
+		if [ ! -f $PIDFILE ]
+		then
+			echo "$PIDFILE does not exist, process is not running"
+
+		else
+			echo "Restarting $APP_DIR/app.js ..."
+			echo "Killing `cat $APP_DIR/pid/app.pid`"
+			kill `cat $APP_DIR/pid/app.pid`;
+			rm $APP_DIR/pid/app.pid;
+			NODE_ENV=$NODE_ENV $EXEC $APP_DIR/app.js  1>$APP_DIR/log/app.log 2>&1 &
+			echo $! > $APP_DIR/pid/app.pid;
+			echo "Node restarted"
+		fi
+		;;
+
+	*)
+		echo "Usage: /etc/init.d/node-app {start|stop|restart}"
+	;;
+esac

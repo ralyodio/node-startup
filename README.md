@@ -6,12 +6,10 @@ Startup script for debian-based linux for running node app when rebooting.
 Installation
 ----
 
-Clone the repo, then copy the startup script node-app to your /etc/init.d directory
+Clone the repo
 
 	git clone https://github.com/chovy/node-startup.git
-	cd node-startup/
-	sudo bash -l
-	cp ./init.d/node-app /etc/init.d/
+	cd node-startup/init.d
 
 Edit the node-app script with your settings for node path, node environment (ie: production or development), path to application directory (where your app.js is), and a path to a pid file.
 
@@ -22,6 +20,11 @@ Edit the node-app script with your settings for node path, node environment (ie:
 	APP_DIR='/var/www/example.com';
 	PIDFILE=$APP_DIR/pid/app.pid
 	
+Copy the startup script node-app to your /etc/init.d directory
+
+	sudo bash -l
+	cp ./init.d/node-app /etc/init.d/
+
 
 Test that it all works:
 	/etc/init.d/node-app start

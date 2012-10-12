@@ -1,7 +1,7 @@
 node-startup
 ============
 
-Startup script for debian-based linux for running node app when rebooting.
+Startup script for debian-based linux for running node app when rebooting from /etc/init.d
 
 Installation
 ----

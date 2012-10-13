@@ -3,6 +3,13 @@ node-startup
 
 Startup script for debian-based linux for running node app when rebooting from /etc/init.d
 
+Why node-startup?
+----
+
+When my vps was rebooted occassionally by the hosting provider, my node.js app was not coming back online. This script can be used in /etc/init.d/node-app which will allow rc.d to restart your app when the machine reboots without your knowledge.
+
+If you are using mongodb, redis, or nginx, you want to add those to your default run-level as well.
+
 Installation
 ----
 

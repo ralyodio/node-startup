@@ -1,6 +1,7 @@
 #/bin/sh
 EXEC=/usr/local/bin/node
 NODE_ENV="production"
+NODE_APP='app.js'
 APP_DIR='/var/www/example.com';
 PIDFILE=$APP_DIR/pid/app.pid
 
@@ -28,7 +29,7 @@ case "$1" in
                 echo "$PIDFILE exists, process is already running or crashed"
         else
                 echo "Starting node app..."
-		NODE_ENV=$NODE_ENV $EXEC $APP_DIR/app.js  1>$APP_DIR/log/app.log 2>&1 &
+		NODE_ENV=$NODE_ENV $EXEC $APP_DIR/$NODE_APP  1>$APP_DIR/log/app.log 2>&1 &
 		echo $! > $APP_DIR/pid/app.pid;
         fi
         ;;
@@ -37,7 +38,7 @@ case "$1" in
         then
                 echo "$PIDFILE does not exist, process is not running"
         else
-                echo "Stopping $APP_DIR/app.js ..."
+                echo "Stopping $APP_DIR/$NODE_APP ..."
 		echo "Killing `cat $APP_DIR/pid/app.pid`"
 		kill `cat $APP_DIR/pid/app.pid`;
 		rm $APP_DIR/pid/app.pid;
@@ -51,11 +52,11 @@ case "$1" in
 			echo "$PIDFILE does not exist, process is not running"
 
 		else
-			echo "Restarting $APP_DIR/app.js ..."
+			echo "Restarting $APP_DIR/$NODE_APP ..."
 			echo "Killing `cat $APP_DIR/pid/app.pid`"
 			kill `cat $APP_DIR/pid/app.pid`;
 			rm $APP_DIR/pid/app.pid;
-			NODE_ENV=$NODE_ENV $EXEC $APP_DIR/app.js  1>$APP_DIR/log/app.log 2>&1 &
+			NODE_ENV=$NODE_ENV $EXEC $APP_DIR/$NODE_APP  1>$APP_DIR/log/app.log 2>&1 &
 			echo $! > $APP_DIR/pid/app.pid;
 			echo "Node restarted"
 		fi

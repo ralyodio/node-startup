@@ -18,12 +18,13 @@ Clone the repo
 	git clone https://github.com/chovy/node-startup.git
 	cd node-startup/init.d
 
-Edit the node-app script with your settings for node path, node environment (ie: production or development), path to application directory (where your app.js is), and a path to a pid file.
+Edit the node-app script with your settings for node path, node environment (ie: production or development), path to application directory (where your app.js is - this is also NODE_APP variable), and a path to a pid file.
 
 	vi node-app
 
 	EXEC=/usr/local/bin/node
 	NODE_ENV="production"
+	NODE_APP="app.js"
 	APP_DIR='/var/www/example.com';
 	PIDFILE=$APP_DIR/pid/app.pid
 

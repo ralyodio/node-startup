@@ -22,13 +22,14 @@ Edit the node-app script with your settings for node path, node environment (ie:
 
 	vi node-app
 
-	EXEC=/usr/local/bin/node
+	NODE_EXEC=/usr/local/bin/node
 	NODE_ENV="production"
 	NODE_APP="app.js"
 	APP_DIR='/var/www/example.com';
-	PIDFILE=$APP_DIR/pid/app.pid
+	PID_FILE=$APP_DIR/pid/app.pid
+	LOG_FILE=$APP_DIR/log/app.log
 
-By default, it expects the pid file to be in /var/www/example.com/pid/app.pid
+By default, it expects the pid file to be in /var/www/example.com/pid/app.pid and your log file to be in /var/www/example.com/log/app.log
 	
 Copy the startup script node-app to your /etc/init.d directory
 

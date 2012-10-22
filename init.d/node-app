@@ -1,9 +1,10 @@
 #/bin/sh
-EXEC=/usr/local/bin/node
+NODE_EXEC=/usr/local/bin/node
 NODE_ENV="production"
 NODE_APP='app.js'
 APP_DIR='/var/www/example.com';
-PIDFILE=$APP_DIR/pid/app.pid
+PID_FILE=$APP_DIR/pid/app.pid
+LOG_FILE=$APP_DIR/log/app.log
 
 ###############
 
@@ -24,40 +25,40 @@ PIDFILE=$APP_DIR/pid/app.pid
 
 case "$1" in
     start)
-        if [ -f $PIDFILE ]
+        if [ -f $PID_FILE ]
         then
-                echo "$PIDFILE exists, process is already running or crashed"
+                echo "$PID_FILE exists, process is already running or crashed"
         else
                 echo "Starting node app..."
-		NODE_ENV=$NODE_ENV $EXEC $APP_DIR/$NODE_APP  1>$APP_DIR/log/app.log 2>&1 &
-		echo $! > $APP_DIR/pid/app.pid;
+		NODE_ENV=$NODE_ENV $NODE_EXEC $APP_DIR/$NODE_APP  1>$LOG_FILE 2>&1 &
+		echo $! > $PID_FILE;
         fi
         ;;
     stop)
-        if [ ! -f $PIDFILE ]
+        if [ ! -f $PID_FILE ]
         then
-                echo "$PIDFILE does not exist, process is not running"
+                echo "$PID_FILE does not exist, process is not running"
         else
                 echo "Stopping $APP_DIR/$NODE_APP ..."
-		echo "Killing `cat $APP_DIR/pid/app.pid`"
-		kill `cat $APP_DIR/pid/app.pid`;
-		rm $APP_DIR/pid/app.pid;
+		echo "Killing `cat $PID_FILE`"
+		kill `cat $PID_FILE`;
+		rm $PID_FILE;
                 echo "Node stopped"
         fi
         ;;
 
 	restart)
-		if [ ! -f $PIDFILE ]
+		if [ ! -f $PID_FILE ]
 		then
-			echo "$PIDFILE does not exist, process is not running"
+			echo "$PID_FILE does not exist, process is not running"
 
 		else
 			echo "Restarting $APP_DIR/$NODE_APP ..."
-			echo "Killing `cat $APP_DIR/pid/app.pid`"
-			kill `cat $APP_DIR/pid/app.pid`;
-			rm $APP_DIR/pid/app.pid;
-			NODE_ENV=$NODE_ENV $EXEC $APP_DIR/$NODE_APP  1>$APP_DIR/log/app.log 2>&1 &
-			echo $! > $APP_DIR/pid/app.pid;
+			echo "Killing `cat $PID_FILE`"
+			kill `cat $PID_FILE`;
+			rm $PID_FILE;
+			NODE_ENV=$NODE_ENV $NODE_EXEC $APP_DIR/$NODE_APP  1>$LOG_FILE 2>&1 &
+			echo $! > $PID_FILE;
 			echo "Node restarted"
 		fi
 		;;

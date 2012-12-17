@@ -55,3 +55,9 @@ Gotchas
 ----
 
 If there is a app.pid file already, but node is not running, and you try to start it will not start. You will have to manually remove the .pid file and run it again.
+
+LICENSE
+----
+
+(The MIT License)
+

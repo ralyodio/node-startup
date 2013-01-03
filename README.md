@@ -54,7 +54,7 @@ Finally, reboot to be sure app starts automatically
 Supported OS
 ----
 
-Tested with Debian 6.0, but it should work on other Linux systems that use startup scripts in /etc/init.d (Redhat, CentOS, Gentoo, etc).
+Tested with Debian 6.0, but it should work on other Linux systems that use startup scripts in /etc/init.d (Redhat, CentOS, Gentoo, Ubuntu, etc).
 
 Gotchas
 ----

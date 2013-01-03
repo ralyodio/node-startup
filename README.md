@@ -1,7 +1,7 @@
 node-startup
 ============
 
-Startup script for debian-based linux for running node app when rebooting from /etc/init.d
+Startup script for Linux-based systems for running node app when rebooting from /etc/init.d script.
 
 Why node-startup?
 ----
@@ -51,10 +51,17 @@ Finally, reboot to be sure app starts automatically
 
 	reboot
 
+Supported OS
+----
+
+Tested with Debian 6.0, but it should work on other Linux systems that use startup scripts in /etc/init.d (Redhat, CentOS, Gentoo, etc).
+
 Gotchas
 ----
 
 If there is a app.pid file already, but node is not running, and you try to start it will not start. You will have to manually remove the .pid file and run it again.
+
+I will add a --force in the near future.
 
 LICENSE
 ----

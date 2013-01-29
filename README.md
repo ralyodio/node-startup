@@ -45,7 +45,7 @@ Test that it all works:
 
 Add node-app to the default runlevels
 
-	update-rd.c node-app defaults
+	update-rc.d node-app defaults
 
 Finally, reboot to be sure app starts automatically
 

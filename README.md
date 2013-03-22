@@ -29,6 +29,10 @@ Edit the node-app script with your settings for node path, node environment (ie:
 	PID_FILE=$APP_DIR/pid/app.pid
 	LOG_FILE=$APP_DIR/log/app.log
 
+CONFIG_DIR is optional and optional environment variable. It is required for node-config: https://github.com/lorenwest/node-config -- if you do not need it, you can simply set it to $APP_DIR.
+
+	CONFIG_DIR=$APP_DIR/config
+
 By default, it expects the pid file to be in /var/www/example.com/pid/app.pid and your log file to be in /var/www/example.com/log/app.log
 	
 Copy the startup script node-app to your /etc/init.d directory

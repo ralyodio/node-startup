@@ -28,8 +28,13 @@ Edit the node-app script with your settings for node path, node environment (ie:
 	APP_DIR='/var/www/example.com';
 	PID_FILE=$APP_DIR/pid/app.pid
 	LOG_FILE=$APP_DIR/log/app.log
+	CONFIG_DIR=$APP_DIR/config
 
-CONFIG_DIR is optional and optional environment variable. It is required for node-config: https://github.com/lorenwest/node-config -- if you do not need it, you can simply set it to $APP_DIR.
+CONFIG_DIR is required to be defined, but can be ignored. It is required for node-config: https://github.com/lorenwest/node-config -- if you do not need it, you can simply set it to $APP_DIR.
+
+	CONFIG_DIR=$APP_DIR
+
+If your are using node-config:
 
 	CONFIG_DIR=$APP_DIR/config
 

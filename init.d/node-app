@@ -15,7 +15,7 @@ CONFIG_DIR=$APP_DIR/config
 # description: node-app is the script for starting a node app on boot.
 ### BEGIN INIT INFO
 # Provides: node
-# Required-Start:    $network $remote_fs $local_fs 
+# Required-Start:    $network $remote_fs $local_fs
 # Required-Stop:     $network $remote_fs $local_fs
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
@@ -35,6 +35,7 @@ case "$1" in
 		echo $! > $PID_FILE;
         fi
         ;;
+
     stop)
         if [ ! -f $PID_FILE ]
         then
@@ -64,7 +65,23 @@ case "$1" in
 		fi
 		;;
 
+	status)
+        if [ -f $PID_FILE ]
+        then
+            PID=`cat $PID_FILE`
+            if [ -z "`ps -ef | grep $PID | grep -v grep`" ]
+            then
+                echo "Node app stopped but pid file exists"
+            else
+                echo "Node app running with pid $PID"
+
+            fi
+        else
+            echo "Node app stopped"
+        fi
+        ;;
+
 	*)
-		echo "Usage: /etc/init.d/node-app {start|stop|restart}"
+		echo "Usage: /etc/init.d/node-app {start|stop|restart|status}"
 	;;
 esac

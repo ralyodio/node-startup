@@ -49,6 +49,7 @@ Copy the startup script node-app to your /etc/init.d directory
 Test that it all works:
 
 	/etc/init.d/node-app start
+	/etc/init.d/node-app status
 	/etc/init.d/node-app restart
 	/etc/init.d/node-app stop
 

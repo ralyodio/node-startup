@@ -1,5 +1,4 @@
 #/bin/sh
-NODE_EXEC=/usr/local/bin/node
 NODE_ENV="production"
 NODE_APP='app.js'
 APP_DIR='/var/www/example.com';
@@ -7,6 +6,7 @@ PID_FILE=$APP_DIR/pid/app.pid
 LOG_FILE=$APP_DIR/log/app.log
 CONFIG_DIR=$APP_DIR/config
 PORT=3000
+NODE_EXEC=`which node`
 
 ###############
 

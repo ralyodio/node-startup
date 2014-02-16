@@ -1,13 +1,35 @@
-#!/bin/sh
+#!/bin/bash
 
+# single or multiple apps 
+# (yes|no)
+MULTIPLE_APPS=no
+
+# use node or forever
+# (yes|no)
+USE_FOREVER=no
+
+# multiple apps
+NODE_ENVS=("production" "production")
+NODE_APPS=("app.js" "app.js")
+NODE_PORTS=(3000 3001)
+APP_DIRS=("/www/example1.com" "/www/example2.com")
+
+# single app
 NODE_ENV="production"
-NODE_APP='app.js'
-APP_DIR='/var/www/example.com';
-PID_FILE=$APP_DIR/pid/app.pid
-LOG_FILE=$APP_DIR/log/app.log
-CONFIG_DIR=$APP_DIR/config
+NODE_APP="app.js"
 PORT=3000
+APP_DIR="/www/example1.com";
+
+# common
+PID_DIR=$APP_DIR/pid
+LOG_DIR=$APP_DIR/log
+CONFIG_DIR=$APP_DIR/config
+
+PID_FILE=$PID_DIR/app.pid
+LOG_FILE=$LOG_DIR/app.log
+
 NODE_EXEC=`which node`
+FOREVER_EXEC=`which forever`
 
 ###############
 
@@ -30,9 +52,32 @@ start_app (){
     then
         echo "$PID_FILE exists, process is already running or crashed"
     else
-        echo "Starting node app..."
-        PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $NODE_EXEC $APP_DIR/$NODE_APP  1>$LOG_FILE 2>&1 &
-        echo $! > $PID_FILE;
+        echo "Starting node app ${APP_DIR}/${NODE_APP} ..."
+        if [ "x$USE_FOREVER" = "xyes" ]
+        then
+          PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $FOREVER_EXEC start $APP_DIR/$NODE_APP
+          PID=$!
+          RESULT=$?
+          
+        else
+          PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $NODE_EXEC $APP_DIR/$NODE_APP  1>$LOG_FILE 2>&1 &
+          PID=$!
+          RESULT=$?
+          
+        fi
+
+        if [ $RESULT -eq 0 ] && [ ! -d $PID_DIR ]
+        then
+          echo "creating directory $PID_DIR ..."
+          mkdir -p $PID_DIR
+        fi
+        
+        if [ $RESULT -eq 0 ]
+        then
+          echo $PID > $PID_FILE;
+        else
+          echo "error runnig app $APP_DIR/$NODE_APP"
+        fi
     fi
 }
 
@@ -41,41 +86,113 @@ stop_app (){
     then
         echo "$PID_FILE does not exist, process is not running"
     else
-        echo "Stopping $APP_DIR/$NODE_APP ..."
-        echo "Killing `cat $PID_FILE`"
-        kill `cat $PID_FILE`;
-        rm -f $PID_FILE;
-        echo "Node stopped"
+        echo -n "Stopping $APP_DIR/$NODE_APP ..."
+        if [ "x$USE_FOREVER" = "xyes" ]
+        then
+          PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $FOREVER_EXEC stop $APP_DIR/$NODE_APP
+          RESULT=$?
+          rm -f $PID_FILE;
+        else
+          # echo "Killing `cat $PID_FILE`"
+          kill `cat $PID_FILE` 1>/dev/null 2>&1
+          RESULT=$?
+          rm -f $PID_FILE;
+        fi
+        
+        if [ $RESULT -eq 0 ]
+        then
+          echo "Node stopped"
+        else
+          echo "error."
+        fi
     fi
 }
 
+multiple_apps_start (){
+    INDEX=0
+    for APP in ${NODE_APPS[@]}; do
+      NODE_ENV=${NODE_ENVS[$INDEX]}
+      NODE_APP=${NODE_APPS[$INDEX]}
+      PORT=${NODE_PORTS[$INDEX]}
+      APP_DIR=${APP_DIRS[$INDEX]}
+      PID_DIR=$APP_DIR/pid
+      LOG_DIR=$APP_DIR/log
+      CONFIG_DIR=$APP_DIR/config
+      PID_FILE=$PID_DIR/app.pid
+      LOG_FILE=$LOG_DIR/app.log
+      
+      start_app
+      let "INDEX++"
+    done
+}
+
+multiple_apps_stop (){
+    INDEX=0
+    for APP in ${NODE_APPS[@]}; do
+      NODE_ENV=${NODE_ENVS[$INDEX]}
+      NODE_APP=${NODE_APPS[$INDEX]}
+      PORT=${NODE_PORTS[$INDEX]}
+      APP_DIR=${APP_DIRS[$INDEX]}
+      PID_DIR=$APP_DIR/pid
+      LOG_DIR=$APP_DIR/log
+      CONFIG_DIR=$APP_DIR/config
+      PID_FILE=$PID_DIR/app.pid
+      LOG_FILE=$LOG_DIR/app.log
+      
+      stop_app
+      let "INDEX++"
+    done
+}
+
+
 case "$1" in
     start)
-        start_app
+        if [ "x$MULTIPLE_APPS" = "xyes" ]
+        then
+          multiple_apps_start
+        else
+          start_app
+        fi
     ;;
 
     stop)
-        stop_app
+        if [ "x$MULTIPLE_APPS" = "xyes" ]
+        then
+          multiple_apps_stop
+        else
+          stop_app
+        fi
+        
     ;;
 
     restart)
-        stop_app
-        start_app
+        if [ "x$MULTIPLE_APPS" = "xyes" ]
+        then
+          multiple_apps_stop
+          multiple_apps_start
+        else
+          stop_app
+          start_app
+        fi
     ;;
 
     status)
-        if [ -f $PID_FILE ]
+        if [ "x$MULTIPLE_APPS" != "xyes" ]
         then
-            PID=`cat $PID_FILE`
-            if [ -z "`ps -ef | grep $PID | grep -v grep`" ]
-            then
-                echo "Node app stopped but pid file exists"
-            else
-                echo "Node app running with pid $PID"
+        
+          if [ -f $PID_FILE ]
+          then
+              PID=`cat $PID_FILE`
+              if [ -z "`ps -ef | grep $PID | grep -v grep`" ]
+              then
+                  echo "Node app stopped but pid file exists"
+              else
+                  echo "Node app running with pid $PID"
 
-            fi
-        else
-            echo "Node app stopped"
+              fi
+          else
+              echo "Node app stopped"
+          fi
         fi
     ;;
 

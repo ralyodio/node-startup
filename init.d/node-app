@@ -29,6 +29,7 @@ start_app (){
     if [ -f $PID_FILE ]
     then
         echo "$PID_FILE exists, process is already running or crashed"
+        exit 1
     else
         echo "Starting node app..."
         PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $NODE_EXEC $APP_DIR/$NODE_APP  1>$LOG_FILE 2>&1 &
@@ -40,6 +41,7 @@ stop_app (){
     if [ ! -f $PID_FILE ]
     then
         echo "$PID_FILE does not exist, process is not running"
+        exit 1
     else
         echo "Stopping $APP_DIR/$NODE_APP ..."
         echo "Killing `cat $PID_FILE`"
@@ -67,7 +69,7 @@ case "$1" in
         if [ -f $PID_FILE ]
         then
             PID=`cat $PID_FILE`
-            if [ -z "`ps -ef | grep $PID | grep -v grep`" ]
+            if [ -z "`ps ef | awk '{print $1}' | grep "^$PID$"`" ]
             then
                 echo "Node app stopped but pid file exists"
             else
@@ -80,7 +82,8 @@ case "$1" in
     ;;
 
     *)
-        echo "Usage: /etc/init.d/node-app {start|stop|restart|status}"
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
     ;;
 esac
 

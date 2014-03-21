@@ -69,7 +69,7 @@ case "$1" in
         if [ -f $PID_FILE ]
         then
             PID=`cat $PID_FILE`
-            if [ -z "`ps -ef | grep $PID | grep -v grep`" ]
+            if [ -z "`ps ef | awk '{print $1}' | grep "^$PID$"`" ]
             then
                 echo "Node app stopped but pid file exists"
             else

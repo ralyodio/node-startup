@@ -1,13 +1,15 @@
 #!/bin/sh
 
 NODE_ENV="production"
-NODE_APP='app.js'
-APP_DIR='/var/www/example.com';
-PID_FILE=$APP_DIR/pid/app.pid
-LOG_FILE=$APP_DIR/log/app.log
-CONFIG_DIR=$APP_DIR/config
+NODE_APP="app.js"
+APP_DIR="/var/www/example.com"
+PID_DIR="$APP_DIR/pid"
+PID_FILE="$PID_DIR/app.pid"
+LOG_DIR="$APP_DIR/log"
+LOG_FILE="$LOG_DIR/app.log"
+CONFIG_DIR="$APP_DIR"
 PORT=3000
-NODE_EXEC=`which node`
+NODE_EXEC=$(which node)
 
 ###############
 
@@ -25,31 +27,122 @@ NODE_EXEC=`which node`
 # Description: Node process for app
 ### END INIT INFO
 
-start_app (){
-    if [ -f $PID_FILE ]
+###############
+
+USAGE="Usage: $0 {start|stop|restart|status} [--force]"
+FORCE_OP=false
+
+pid_file_exists() {
+    [ -f "$PID_FILE" ]
+}
+
+get_pid() {
+    echo "$(cat "$PID_FILE")"
+}
+
+is_running() {
+    PID=$(get_pid)
+    ! [ -z "$(ps ef | awk '{print $1}' | grep "^$PID$")" ]
+}
+
+start_it() {
+    mkdir -p "$PID_DIR"
+    mkdir -p "$LOG_DIR"
+
+    echo "Starting node app ..."
+    PORT="$PORT" NODE_ENV="$NODE_ENV" NODE_CONFIG_DIR="$CONFIG_DIR" $NODE_EXEC "$APP_DIR/$NODE_APP"  1>"$LOG_FILE" 2>&1 &
+    echo $! > "$PID_FILE"
+    echo "Node app started with pid $!"
+}
+
+stop_process() {
+    PID=$(get_pid)
+    kill $PID
+}
+
+remove_pid_file() {
+    rm -f "$PID_FILE"
+}
+
+start_app() {
+    if pid_file_exists
     then
-        echo "$PID_FILE exists, process is already running or crashed"
-        exit 1
+        if is_running
+        then
+            PID=$(get_pid)
+            echo "Node app already running with pid $PID"
+            exit 1
+        else
+            echo "Node app stopped, but pid file exists"
+            if [ $FORCE_OP = true ]
+            then
+                echo "Forcing start anyways"
+                echo "Removing pid file"
+                remove_pid_file
+                start_it
+            fi
+        fi
     else
-        echo "Starting node app..."
-        PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $NODE_EXEC $APP_DIR/$NODE_APP  1>$LOG_FILE 2>&1 &
-        echo $! > $PID_FILE;
+        start_it
     fi
 }
 
-stop_app (){
-    if [ ! -f $PID_FILE ]
+stop_app() {
+    if pid_file_exists
     then
-        echo "$PID_FILE does not exist, process is not running"
-        exit 1
+        if is_running
+        then
+            echo "Stopping node app ..."
+            echo "Killing process $(get_pid)"
+            stop_process
+            echo "Removing pid file"
+            remove_pid_file
+            echo "Node app stopped"
+        else
+            echo "Node app already stopped, but pid file exists"
+            if [ $FORCE_OP = true ]
+            then
+                echo "Forcing stop anyways ..."
+                echo "Removing pid file"
+                remove_pid_file
+                echo "Node app stopped"
+            else
+                exit 1
+            fi
+        fi
     else
-        echo "Stopping $APP_DIR/$NODE_APP ..."
-        echo "Killing `cat $PID_FILE`"
-        kill `cat $PID_FILE`;
-        rm -f $PID_FILE;
-        echo "Node stopped"
+        echo "Node app already stopped, pid file does not exist"
+        exit 1
     fi
 }
+
+status_app() {
+    if pid_file_exists
+    then
+        if is_running
+        then
+            echo "Node app running with pid $(get_pid)"
+        else
+            echo "Node app stopped, but pid file exists"
+        fi
+    else
+        echo "Node app stopped"
+    fi
+}
+
+case "$2" in
+    --force)
+        FORCE_OP=true
+    ;;
+
+    "")
+    ;;
+
+    *)
+        echo $USAGE
+        exit 1
+    ;;
+esac
 
 case "$1" in
     start)
@@ -66,24 +159,11 @@ case "$1" in
     ;;
 
     status)
-        if [ -f $PID_FILE ]
-        then
-            PID=`cat $PID_FILE`
-            if [ -z "`ps ef | awk '{print $1}' | grep "^$PID$"`" ]
-            then
-                echo "Node app stopped but pid file exists"
-            else
-                echo "Node app running with pid $PID"
-
-            fi
-        else
-            echo "Node app stopped"
-        fi
+        status_app
     ;;
 
     *)
-        echo "Usage: $0 {start|stop|restart|status}"
+        echo $USAGE
         exit 1
     ;;
 esac
-

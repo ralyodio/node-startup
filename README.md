@@ -15,7 +15,7 @@ Clone the repo:
     git clone https://github.com/chovy/node-startup.git
     cd node-startup/init.d
 
-Edit the node-app script with your settings from the **Configuration** section.
+Edit the **node-app** script with your settings from the **Configuration** section, then follow instructions in the **Running** section.
 
 ##Configuration##
 
@@ -26,7 +26,7 @@ At the top of the **node-app** file, a few items are declared which are either p
 The items declared and passed to the Node.js application are:
 
 - **NODE_ENV** - the type of environment - **development**, **production**, etc. - can be read by the application to do things conditionally (defaults to **"production"**)
-- **PORT** - the port that the Node.js application should listen on - should be read by the application and used when starting its server (defaults to **3000**)
+- **PORT** - the port that the Node.js application should listen on - should be read by the application and used when starting its server (defaults to **"3000"**)
 - **CONFIG_DIR** - used for [node-config](https://github.com/lorenwest/node-config); is required, but can be ignored if not needed - just set the value to be **"$APP_DIR"**:
 
         CONFIG_DIR="$APP_DIR"

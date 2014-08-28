@@ -25,25 +25,25 @@ At the top of the **node-app** file, a few items are declared which are either p
 
 The items declared and passed to the Node.js application are:
 
-- **NODE_ENV** - the type of environment - **development**, **production**, etc. (can be read by the application to do things conditionally)
-- **PORT** - the port that the Node.js application should listen on (should be read by the application and used when starting its server)
-- **CONFIG_DIR** - used for [node-config](https://github.com/lorenwest/node-config); is required, but can be ignored if not needed - just set the value to be **$APP_DIR**:
+- **NODE_ENV** - the type of environment - **development**, **production**, etc. - can be read by the application to do things conditionally (defaults to **"production"**)
+- **PORT** - the port that the Node.js application should listen on - should be read by the application and used when starting its server (defaults to **3000**)
+- **CONFIG_DIR** - used for [node-config](https://github.com/lorenwest/node-config); is required, but can be ignored if not needed - just set the value to be **"$APP_DIR"**:
 
-        CONFIG_DIR=$APP_DIR
+        CONFIG_DIR="$APP_DIR"
         #or if actually using node-config, use something like:
-        CONFIG_DIR=$APP_DIR/config
+        CONFIG_DIR="$APP_DIR/config"
 
 ###Execution Config###
 
 The items declared and used by the overall management of executing the application are:
 
-- **NODE_EXEC** - location of the Node.js package executable - useful to set if the executable isn't on your PATH or isn't a service (default uses `which`)
-- **APP_DIR** - location of the Node.js application directory (defaults to **/var/www/example.com**)
-- **NODE_APP** - filename of the Node.js application (defaults to **app.js**)
-- **PID_DIR** - location of the PID directory (defaults to **$APP_DIR/pid**)
-- **PID_FILE** - name of the PID file (defaults to **app.pid**)
-- **LOG_DIR** - location of the log (Node.js application output) directory (defaults to **$APP_DIR/log**)
-- **LOG_FILE** - name of the log file (defaults to **app.log**)
+- **NODE_EXEC** - location of the Node.js package executable - useful to set if the executable isn't on your PATH or isn't a service (default uses `which node`)
+- **APP_DIR** - location of the Node.js application directory (defaults to **"/var/www/example.com"**)
+- **NODE_APP** - filename of the Node.js application (defaults to **"app.js"**)
+- **PID_DIR** - location of the PID directory (defaults to **"$APP_DIR/pid"**)
+- **PID_FILE** - name of the PID file (defaults to **"app.pid"**)
+- **LOG_DIR** - location of the log (Node.js application output) directory (defaults to **"$APP_DIR/log"**)
+- **LOG_FILE** - name of the log file (defaults to **"app.log"**)
 
 ##Running##
 	

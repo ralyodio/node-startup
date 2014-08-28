@@ -1,7 +1,7 @@
 #!/bin/sh
 
 NODE_ENV="production"
-PORT=3000
+PORT="3000"
 CONFIG_DIR="$APP_DIR"
 APP_DIR="/var/www/example.com"
 NODE_APP="app.js"

@@ -1,80 +1,94 @@
-node-startup
-============
+#node-startup#
 
-Startup script for Linux-based systems for running node app when rebooting from /etc/init.d script.
+Startup script for Linux-based systems for running a [Node.js](http://nodejs.org/) app when rebooting, using an /etc/init.d script.
 
-Why node-startup?
-----
+##Why node-startup?##
 
-When my vps was rebooted occassionally by the hosting provider, my node.js app was not coming back online. This script can be used in /etc/init.d/node-app which will allow rc.d to restart your app when the machine reboots without your knowledge.
+When my VPS was rebooted occassionally by the hosting provider, my Node.js app was not coming back online after boot. This script can be used in **/etc/init.d**, which will allow rc.d to restart your app when the machine reboots without your knowledge.
 
-If you are using mongodb, redis, or nginx, you want to add those to your default run-level as well.
+If you are using MongoDB, Redis, or Nginx, you want to add those to your default run-level as well.
 
-Installation
-----
+##Installation##
 
 Clone the repo
 
-	git clone https://github.com/chovy/node-startup.git
-	cd node-startup/init.d
+    git clone https://github.com/chovy/node-startup.git
+    cd node-startup/init.d
 
-Edit the node-app script with your settings for node path, node environment (ie: production or development), path to application directory (where your app.js is - this is also NODE_APP variable), and a path to a pid file.
+Edit the node-app script with your settings from the **Configuration** section.
 
-	vi node-app
+##Configuration##
 
-	NODE_EXEC=/usr/local/bin/node
-	NODE_ENV="production"
-	NODE_APP="app.js"
-	APP_DIR='/var/www/example.com';
-	PID_FILE=$APP_DIR/pid/app.pid
-	LOG_FILE=$APP_DIR/log/app.log
-	CONFIG_DIR=$APP_DIR/config
+At the top of the **node-app** file, a few items are declared which are either passed to the Node.js app or for general execution.
 
-CONFIG_DIR is required to be defined, but can be ignored. It is required for node-config: https://github.com/lorenwest/node-config -- if you do not need it, you can simply set it to $APP_DIR.
+###Node.js Config###
 
-	CONFIG_DIR=$APP_DIR
+The items declared and passed to the Node.js application are:
 
-If your are using node-config:
+- **NODE_ENV** - the type of environment - **development**, **production**, etc. (can be read by the application to do things conditionally)
+- **PORT** - the port that the Node.js application should listen on (should be read by the application and used when starting its server)
+- **CONFIG_DIR** - used for [node-config](https://github.com/lorenwest/node-config); is required, but can be ignored if not needed - just set the value to be **$APP_DIR**:
+    CONFIG_DIR=$APP_DIR
+    #or if actually using node-config, use something like:
+    CONFIG_DIR=$APP_DIR/config
 
-	CONFIG_DIR=$APP_DIR/config
+###Execution Config###
 
-By default, it expects the pid file to be in /var/www/example.com/pid/app.pid and your log file to be in /var/www/example.com/log/app.log
+The items declared and used by the overall management of executing the application are:
+
+- **NODE_EXEC** - location of the Node.js package executable - useful to set if the executable isn't on your PATH or isn't a service (default uses `which`)
+- **APP_DIR** - location of the Node.js application directory (defaults to **/var/www/example.com**)
+- **NODE_APP** - filename of the Node.js application (defaults to **app.js**)
+- **PID_DIR** - location of the PID directory (defaults to **$APP_DIR/pid**)
+- **PID_FILE** - name of the PID file (defaults to **app.pid**)
+- **LOG_DIR** - location of the log (Node.js application output) directory (defaults to **$APP_DIR/log**)
+- **LOG_FILE** - name of the log file (defaults to **app.log**)
+
+##Running##
 	
-Copy the startup script node-app to your /etc/init.d directory
+Copy the startup script **node-app** to your **/etc/init.d** directory:
 
-	sudo bash -l
-	cp ./init.d/node-app /etc/init.d/
+    sudo bash -l
+    cp ./init.d/node-app /etc/init.d/
 
+###Available Actions###
+
+The service exposes 4 actions:
+
+- **start** - starts the Node.js application
+- **stop** - stops the Node.js application
+- **restart** - stops the Node.js application, then starts the Node.js application
+- **status** - returns the current running status of the Node.js application (based on the PID file and running processes)
+
+####Force####
+
+In addition to the **start**, **stop**, and **restart** actions, a **--force** option can be added to the execution so that the following scenarios have the following outcomes:
+
+- **start** - PID file exists but application is stopped -> removes PID file and starts the application
+- **stop** - PID file exists but application -> removes PID file
+- **restart** - either of the above scenarios occur
+
+###Testing###
 
 Test that it all works:
 
-	/etc/init.d/node-app start
-	/etc/init.d/node-app status
-	/etc/init.d/node-app restart
-	/etc/init.d/node-app stop
+    /etc/init.d/node-app start
+    /etc/init.d/node-app status
+    /etc/init.d/node-app restart
+    /etc/init.d/node-app stop
 
-Add node-app to the default runlevels
+Add **node-app** to the default runlevels:
 
-	update-rc.d node-app defaults
+    update-rc.d node-app defaults
 
-Finally, reboot to be sure app starts automatically
+Finally, reboot to be sure the Node.js application starts automatically:
 
-	reboot
+    sudo reboot
 
-Supported OS
-----
+##Supported OS##
 
-Tested with Debian 6.0, but it should work on other Linux systems that use startup scripts in /etc/init.d (Redhat, CentOS, Gentoo, Ubuntu, etc).
+Tested with Debian 6.0, but it should work on other Linux systems that use startup scripts in **/etc/init.d** (Red Hat, CentOS, Gentoo, Ubuntu, etc.).
 
-Gotchas
-----
-
-If there is a app.pid file already, but node is not running, and you try to start it will not start. You will have to manually remove the .pid file and run it again.
-
-I will add a --force in the near future.
-
-LICENSE
-----
+##LICENSE##
 
 (The MIT License)
-

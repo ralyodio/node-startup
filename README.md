@@ -10,7 +10,7 @@ If you are using MongoDB, Redis, or Nginx, you want to add those to your default
 
 ##Installation##
 
-Clone the repo
+Clone the repo:
 
     git clone https://github.com/chovy/node-startup.git
     cd node-startup/init.d
@@ -29,9 +29,9 @@ The items declared and passed to the Node.js application are:
 - **PORT** - the port that the Node.js application should listen on (should be read by the application and used when starting its server)
 - **CONFIG_DIR** - used for [node-config](https://github.com/lorenwest/node-config); is required, but can be ignored if not needed - just set the value to be **$APP_DIR**:
 
-    CONFIG_DIR=$APP_DIR
-    #or if actually using node-config, use something like:
-    CONFIG_DIR=$APP_DIR/config
+        CONFIG_DIR=$APP_DIR
+        #or if actually using node-config, use something like:
+        CONFIG_DIR=$APP_DIR/config
 
 ###Execution Config###
 

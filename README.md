@@ -1,6 +1,6 @@
 #node-startup#
 
-Startup script for Linux-based systems for running a [Node.js](http://nodejs.org/) app when rebooting, using an /etc/init.d script.
+Startup script for Linux-based systems for running a [Node.js](http://nodejs.org/) app when rebooting, using an **/etc/init.d** script.
 
 ##Why node-startup?##
 

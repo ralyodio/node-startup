@@ -1,14 +1,14 @@
 #!/bin/sh
 
 NODE_ENV="production"
-NODE_APP="app.js"
+PORT="3000"
+CONFIG_DIR="$APP_DIR"
 APP_DIR="/var/www/example.com"
+NODE_APP="app.js"
 PID_DIR="$APP_DIR/pid"
 PID_FILE="$PID_DIR/app.pid"
 LOG_DIR="$APP_DIR/log"
 LOG_FILE="$LOG_DIR/app.log"
-CONFIG_DIR="$APP_DIR"
-PORT=3000
 NODE_EXEC=$(which node)
 
 ###############
@@ -57,10 +57,12 @@ start_it() {
 
 stop_process() {
     PID=$(get_pid)
+    echo "Killing process $PID"
     kill $PID
 }
 
 remove_pid_file() {
+    echo "Removing pid file"
     rm -f "$PID_FILE"
 }
 
@@ -77,7 +79,6 @@ start_app() {
             if [ $FORCE_OP = true ]
             then
                 echo "Forcing start anyways"
-                echo "Removing pid file"
                 remove_pid_file
                 start_it
             fi
@@ -93,9 +94,7 @@ stop_app() {
         if is_running
         then
             echo "Stopping node app ..."
-            echo "Killing process $(get_pid)"
             stop_process
-            echo "Removing pid file"
             remove_pid_file
             echo "Node app stopped"
         else
@@ -103,7 +102,6 @@ stop_app() {
             if [ $FORCE_OP = true ]
             then
                 echo "Forcing stop anyways ..."
-                echo "Removing pid file"
                 remove_pid_file
                 echo "Node app stopped"
             else
@@ -121,7 +119,8 @@ status_app() {
     then
         if is_running
         then
-            echo "Node app running with pid $(get_pid)"
+            PID=$(get_pid)
+            echo "Node app running with pid $PID"
         else
             echo "Node app stopped, but pid file exists"
         fi

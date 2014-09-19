@@ -2,9 +2,9 @@
 
 NODE_ENV="production"
 PORT="3000"
-CONFIG_DIR="$APP_DIR"
 APP_DIR="/var/www/example.com"
 NODE_APP="app.js"
+CONFIG_DIR="$APP_DIR"
 PID_DIR="$APP_DIR/pid"
 PID_FILE="$PID_DIR/app.pid"
 LOG_DIR="$APP_DIR/log"

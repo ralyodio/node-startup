@@ -89,3 +89,7 @@ Tested with Debian 6.0, but it should work on other Linux systems that use start
 ##LICENSE##
 
 (The MIT License)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/chovy/node-startup/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+

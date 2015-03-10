@@ -5,7 +5,7 @@ Startup script for Linux-based systems for running a [Node.js](http://nodejs.org
 
 ## Looking for a maintainer
 
-If you use node-startup and would like to be a mainter, send me a message.
+If you use node-startup and would like to be a maintainer, send me a message.
 
 ##Why node-startup?##
 

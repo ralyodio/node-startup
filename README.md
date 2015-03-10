@@ -2,6 +2,11 @@
 
 Startup script for Linux-based systems for running a [Node.js](http://nodejs.org/) app when rebooting, using an **/etc/init.d** script.
 
+
+## Looking for a maintainer
+
+If you use node-startup and would like to be a mainter, send me a message.
+
 ##Why node-startup?##
 
 When my VPS was rebooted occassionally by the hosting provider, my Node.js app was not coming back online after boot. This script can be used in **/etc/init.d**, which will allow rc.d to restart your app when the machine reboots without your knowledge.

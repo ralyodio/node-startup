@@ -1,5 +1,6 @@
 #!/bin/sh
 
+USER="root"
 NODE_ENV="production"
 PORT="3000"
 APP_DIR="/var/www/example.com"
@@ -47,14 +48,13 @@ is_running() {
 
 start_it() {
     mkdir -p "$PID_DIR"
+    chown $USER:$USER "$PID_DIR"
     mkdir -p "$LOG_DIR"
-    
-    cd "$APP_DIR"
+    chown $USER:$USER "$LOG_DIR"
 
     echo "Starting node app ..."
-    PORT="$PORT" NODE_ENV="$NODE_ENV" NODE_CONFIG_DIR="$CONFIG_DIR" $NODE_EXEC "$APP_DIR/$NODE_APP"  1>"$LOG_FILE" 2>&1 &
-    echo $! > "$PID_FILE"
-    echo "Node app started with pid $!"
+    echo "cd $APP_DIR && PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $NODE_EXEC $APP_DIR/$NODE_APP 1>$LOG_FILE 2>&1 & echo \$! > $PID_FILE" | sudo -i -u $USER
+    echo "Node app started with pid $(get_pid)"
 }
 
 stop_process() {

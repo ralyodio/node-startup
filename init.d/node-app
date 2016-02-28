@@ -11,7 +11,7 @@ PID_FILE="$PID_DIR/app.pid"
 LOG_DIR="$APP_DIR/log"
 LOG_FILE="$LOG_DIR/app.log"
 NODE_EXEC=$(which node)
-PROCESSNAME="Node app"
+APP_NAME="Node app"
 
 ###############
 
@@ -53,9 +53,9 @@ start_it() {
     mkdir -p "$LOG_DIR"
     chown $USER:$USER "$LOG_DIR"
 
-    echo "Starting $PROCESSNAME ..."
+    echo "Starting $APP_NAME ..."
     echo "cd $APP_DIR && PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $NODE_EXEC $APP_DIR/$NODE_APP 1>$LOG_FILE 2>&1 & echo \$! > $PID_FILE" | sudo -i -u $USER
-    echo "$PROCESSNAME started with pid $(get_pid)"
+    echo "$APP_NAME started with pid $(get_pid)"
 }
 
 stop_process() {
@@ -75,10 +75,10 @@ start_app() {
         if is_running
         then
             PID=$(get_pid)
-            echo "$PROCESSNAME already running with pid $PID"
+            echo "$APP_NAME already running with pid $PID"
             exit 1
         else
-            echo "$PROCESSNAME stopped, but pid file exists"
+            echo "$APP_NAME stopped, but pid file exists"
             if [ $FORCE_OP = true ]
             then
                 echo "Forcing start anyways"
@@ -96,23 +96,23 @@ stop_app() {
     then
         if is_running
         then
-            echo "Stopping $PROCESSNAME ..."
+            echo "Stopping $APP_NAME ..."
             stop_process
             remove_pid_file
-            echo "$PROCESSNAME stopped"
+            echo "$APP_NAME stopped"
         else
-            echo "$PROCESSNAME already stopped, but pid file exists"
+            echo "$APP_NAME already stopped, but pid file exists"
             if [ $FORCE_OP = true ]
             then
                 echo "Forcing stop anyways ..."
                 remove_pid_file
-                echo "$PROCESSNAME stopped"
+                echo "$APP_NAME stopped"
             else
                 exit 1
             fi
         fi
     else
-        echo "$PROCESSNAME already stopped, pid file does not exist"
+        echo "$APP_NAME already stopped, pid file does not exist"
         exit 1
     fi
 }
@@ -123,12 +123,12 @@ status_app() {
         if is_running
         then
             PID=$(get_pid)
-            echo "$PROCESSNAME running with pid $PID"
+            echo "$APP_NAME running with pid $PID"
         else
-            echo "$PROCESSNAME stopped, but pid file exists"
+            echo "$APP_NAME stopped, but pid file exists"
         fi
     else
-        echo "$PROCESSNAME stopped"
+        echo "$APP_NAME stopped"
     fi
 }
 

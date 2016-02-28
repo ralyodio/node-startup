@@ -11,6 +11,7 @@ PID_FILE="$PID_DIR/app.pid"
 LOG_DIR="$APP_DIR/log"
 LOG_FILE="$LOG_DIR/app.log"
 NODE_EXEC=$(which node)
+PROCESSNAME="Node app"
 
 ###############
 
@@ -52,9 +53,9 @@ start_it() {
     mkdir -p "$LOG_DIR"
     chown $USER:$USER "$LOG_DIR"
 
-    echo "Starting node app ..."
+    echo "Starting $PROCESSNAME ..."
     echo "cd $APP_DIR && PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $NODE_EXEC $APP_DIR/$NODE_APP 1>$LOG_FILE 2>&1 & echo \$! > $PID_FILE" | sudo -i -u $USER
-    echo "Node app started with pid $(get_pid)"
+    echo "$PROCESSNAME started with pid $(get_pid)"
 }
 
 stop_process() {
@@ -74,10 +75,10 @@ start_app() {
         if is_running
         then
             PID=$(get_pid)
-            echo "Node app already running with pid $PID"
+            echo "$PROCESSNAME already running with pid $PID"
             exit 1
         else
-            echo "Node app stopped, but pid file exists"
+            echo "$PROCESSNAME stopped, but pid file exists"
             if [ $FORCE_OP = true ]
             then
                 echo "Forcing start anyways"
@@ -95,23 +96,23 @@ stop_app() {
     then
         if is_running
         then
-            echo "Stopping node app ..."
+            echo "Stopping $PROCESSNAME ..."
             stop_process
             remove_pid_file
-            echo "Node app stopped"
+            echo "$PROCESSNAME stopped"
         else
-            echo "Node app already stopped, but pid file exists"
+            echo "$PROCESSNAME already stopped, but pid file exists"
             if [ $FORCE_OP = true ]
             then
                 echo "Forcing stop anyways ..."
                 remove_pid_file
-                echo "Node app stopped"
+                echo "$PROCESSNAME stopped"
             else
                 exit 1
             fi
         fi
     else
-        echo "Node app already stopped, pid file does not exist"
+        echo "$PROCESSNAME already stopped, pid file does not exist"
         exit 1
     fi
 }
@@ -122,12 +123,12 @@ status_app() {
         if is_running
         then
             PID=$(get_pid)
-            echo "Node app running with pid $PID"
+            echo "$PROCESSNAME running with pid $PID"
         else
-            echo "Node app stopped, but pid file exists"
+            echo "$PROCESSNAME stopped, but pid file exists"
         fi
     else
-        echo "Node app stopped"
+        echo "$PROCESSNAME stopped"
     fi
 }
 

@@ -45,7 +45,7 @@ The items declared and used by the overall management of executing the applicati
 - **PID_FILE** - name of the PID file (defaults to **"$PID_DIR/app.pid"**)
 - **LOG_DIR** - location of the log (Node.js application output) directory (defaults to **"$APP_DIR/log"**)
 - **LOG_FILE** - name of the log file (defaults to **"$LOG_DIR/app.log"**)
-- **APP_NAME** - name of the app for display and messaging purposes
+- **APP_NAME** - name of the app for display and messaging purposes (defaults to **"Node app"**)
 
 ##Running##
 	

@@ -45,8 +45,8 @@ get_pid() {
 }
 
 is_running() {
-    PID=$(get_pid)
-    ! [ -z "$(ps aux | awk '{print $2}' | grep "^$PID$")" ]
+    PID="$(get_pid)"
+    [ -d /proc/$PID ]
 }
 
 start_it() {

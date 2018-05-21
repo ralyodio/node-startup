@@ -82,7 +82,10 @@ Test that it all works:
 
 Add **node-app** to the default runlevels:
 
+    # Debian
     update-rc.d node-app defaults
+    # RHEL
+    chkconfig --add node-app
 
 Finally, reboot to be sure the Node.js application starts automatically:
 

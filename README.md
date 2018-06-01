@@ -84,7 +84,7 @@ Add **node-app** to the default runlevels:
 
     # Debian
     update-rc.d node-app defaults
-    # RHEL
+    # RHEL, --del to remove
     chkconfig --add node-app
 
 Finally, reboot to be sure the Node.js application starts automatically:

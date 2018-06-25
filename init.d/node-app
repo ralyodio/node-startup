@@ -68,7 +68,9 @@ start_it() {
 stop_process() {
     PID=$(get_pid)
     echo "Killing process $PID"
-    pkill -P $PID
+    # Not galmourous, but mutes bash's terminated messages
+    kill -- -$(ps -o pgid= $PID | grep -o [0-9]*)
+    wait $PID 2>/dev/null
 }
 
 remove_pid_file() {

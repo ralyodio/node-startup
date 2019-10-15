@@ -7,11 +7,6 @@ Startup script for Linux-based systems for running a [Node.js](http://nodejs.org
 
 If you use node-startup and would like to be a maintainer, send me a message.
 
-## Why node-startup?
-
-When my VPS was rebooted occassionally by the hosting provider, my Node.js app was not coming back online after boot. This script can be used in **/etc/init.d**, which will allow rc.d to restart your app when the machine reboots without your knowledge.
-
-If you are using [MongoDB](http://www.mongodb.org/), [Redis](http://redis.io/), or [Nginx](http://nginx.org/), you want to add those to your default run-level as well.
 
 ## Installation
 
@@ -47,12 +42,6 @@ The items declared and used by the overall management of executing the applicati
 - **LOG_FILE** - name of the log file (defaults to **"$LOG_DIR/app.log"**)
 - **APP_NAME** - name of the app for display and messaging purposes (defaults to **"Node app"**)
 
-## Running
-	
-Copy the startup script **node-app** to your **/etc/init.d** directory:
-
-    sudo bash -l
-    cp ./init.d/node-app /etc/init.d/
 
 ### Available Actions
 
@@ -63,13 +52,6 @@ The service exposes 4 actions:
 - **restart** - stops the Node.js application, then starts the Node.js application
 - **status** - returns the current running status of the Node.js application (based on the PID file and running processes)
 
-#### Force Action
-
-In addition to the **start**, **stop**, and **restart** actions, a **--force** option can be added to the execution so that the following scenarios have the following outcomes:
-
-- **start** - PID file exists but application is stopped -> removes PID file and starts the application
-- **stop** - PID file exists but application is stopped -> removes PID file
-- **restart** - either of the above scenarios occur
 
 ### Testing
 
@@ -88,6 +70,24 @@ Add **node-app** to the default runlevels:
     chkconfig --add node-app
 
 Finally, reboot to be sure the Node.js application starts automatically:
+#### Force Action## Why node-startup?
+
+When my VPS was rebooted occassionally by the hosting provider, my Node.js app was not coming back online after boot. This script can be used in **/etc/init.d**, which will allow rc.d to restart your app when the machine reboots without your knowledge.
+
+If you are using [MongoDB](http://www.mongodb.org/), [Redis](http://redis.io/), or [Nginx](http://nginx.org/), you want to add those to your default run-level as well.
+
+## Running
+	
+Copy the startup script **node-app** to your **/etc/init.d** directory:
+
+    sudo bash -l
+    cp ./init.d/node-app /etc/init.d/
+
+In addition to the **start**, **stop**, and **restart** actions, a **--force** option can be added to the execution so that the following scenarios have the following outcomes:
+
+- **start** - PID file exists but application is stopped -> removes PID file and starts the application
+- **stop** - PID file exists but application is stopped -> removes PID file
+- **restart** - either of the above scenarios occur
 
     sudo reboot
 
